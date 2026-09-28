@@ -12,6 +12,7 @@ const { chromium } = playwright;
 
 async function main() {
   const evidenceDir = process.argv[2];
+  const baseUrl = process.argv[3] || 'http://localhost:8000';
   assert(evidenceDir, 'Pass the evidence directory as the first argument.');
   fs.mkdirSync(evidenceDir, { recursive: true });
   const browser = await chromium.launch({
@@ -21,7 +22,7 @@ async function main() {
   try {
     for (const [name, width, height] of [['desktop', 1280, 800], ['mobile', 375, 812]]) {
       const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
-      await page.goto('http://localhost:8000', { waitUntil: 'networkidle' });
+      await page.goto(baseUrl, { waitUntil: 'networkidle' });
       assert.equal(await page.title(), '틈 — 잠깐 멈추고, 다시 시작하기');
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
       assert.equal(overflow, false, `${name}: horizontal overflow`);

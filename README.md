@@ -36,7 +36,7 @@ python3 dev_server.py
 3. Vercel 프로젝트의 환경 변수에 `OPENAI_API_KEY`를 등록합니다. 필요하면 `OPENAI_MODEL`도 등록합니다. 키는 코드, README, 화면 캡처에 넣지 않습니다.
 4. 배포 후 운영 URL에서 메뉴 이동과 실제 루틴 생성을 확인합니다. 환경 변수 변경 후에는 재배포합니다.
 
-**배포 URL:** 미배포 — GitHub/Vercel 프로젝트 연결 및 서버용 API 키 설정 후 기록
+**배포 URL:** [https://codyssey-a1-3-nine.vercel.app/](https://codyssey-a1-3-nine.vercel.app/)
 
 ## 요청과 응답
 
@@ -54,6 +54,6 @@ python3 dev_server.py
 - `python3 -m unittest discover -s tests -v`: API 입력·응답·AI 결과 구조 확인
 - [서비스 기획서](docs/PLAN.md): 문제, 대상, 화면, AI 흐름, 오류 처리, 테스트 시나리오
 - [AI 코드 작성 과정](docs/AI_WORK_LOG.md): 실제 작업 흐름과 제출 증빙 위치
-- [데스크톱 화면](docs/evidence/desktop.png)과 [모바일 화면](docs/evidence/mobile.png)은 로컬 Chrome에서 캡처했습니다. 실제 AI 결과 화면과 AI 대화 캡처는 API 키가 설정된 배포 환경 및 이 Codex 대화에서 추가해야 합니다.
+- [데스크톱 화면](docs/evidence/desktop.png)과 [모바일 화면](docs/evidence/mobile.png)은 Chrome에서 운영 URL을 열어 캡처했습니다. 실제 AI 결과 화면과 AI 대화 캡처는 API 키가 설정된 배포 환경 및 이 Codex 대화에서 추가해야 합니다.
 
-현재 작업 환경에는 OpenAI 키와 Vercel 프로젝트 연결 정보가 없어 실제 AI 호출과 운영 URL 검증은 아직 수행하지 않았습니다.
+운영 URL에서 화면, 정적 파일, Python API 경로를 확인했습니다. 현재 `OPENAI_API_KEY`가 Vercel에 설정되지 않아 실제 AI 생성 요청은 설정 안내(503)를 반환합니다. 키 설정 후 재배포하여 실제 생성 결과를 다시 확인해야 합니다.
