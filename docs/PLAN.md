@@ -19,7 +19,7 @@
 
 1. 사용자는 기분 `지침/불안/산만/무기력` 중 하나와 시간 `3/5/10/15분` 중 하나를 선택한다. 상황 설명은 160자 이내로 선택 입력한다.
 2. 브라우저는 필수 입력을 검사한 뒤 `POST /api/routine`으로 JSON `{mood, minutes, context}`를 전송한다. 로딩 상태와 20초 제한을 표시한다.
-3. Python Vercel Function은 입력값을 다시 검사하고 서버 환경 변수 `OPENAI_API_KEY`로 OpenAI Responses API를 호출한다. 모델은 구조화된 JSON으로 제목, 소개, 2~3개 단계, 마무리 문장을 돌려준다. 각 단계의 시간 합은 선택한 시간과 같아야 한다.
+3. Python Vercel Function은 입력값을 다시 검사하고 서버 환경 변수 `OPENAI_API_KEY`의 Copa virtual key로 `https://copa.codyssey.kr/v1/chat/completions`를 호출한다. `MODEL` 환경 변수로 모델을 선택한다. 모델은 JSON으로 제목, 소개, 2~3개 단계, 마무리 문장을 돌려준다. 각 단계의 시간 합은 선택한 시간과 같아야 한다.
 4. 브라우저는 응답을 안전하게 텍스트로 표시하고 다시 만들기 동작을 제공한다. 개인 입력과 결과를 사이트 데이터베이스에 저장하지 않는다.
 
 ## 오류 처리

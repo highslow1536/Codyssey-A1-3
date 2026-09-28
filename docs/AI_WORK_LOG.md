@@ -11,6 +11,7 @@
 5. 완성된 파일을 `highslow1536/Codyssey-A1-3` GitHub 저장소의 `main` 브랜치에 업로드했다.
 6. 첫 Vercel 빌드가 Python 진입점 탐색 오류로 실패했다. 정적 화면과 `api/`의 파일 기반 함수를 함께 배포하도록 `vercel.json`에서 프레임워크를 `Other`로 고정했다. 새 커밋의 Vercel 상태가 성공인 것을 확인했다.
 7. 운영 URL `https://codyssey-a1-3-nine.vercel.app/`에서 화면과 정적 자산은 200, `GET /api/routine`은 405로 확인했다. AI 키가 아직 없어 정상 입력의 POST는 503을 반환한다. 실제 생성 결과 검증은 키 설정 후 진행한다.
+8. 사용자가 제공한 Copa 공식 호출 예제를 바탕으로 OpenAI Responses 호출을 Copa Chat Completions 호출로 수정했다. `OPENAI_API_KEY`에는 virtual key를, `MODEL`에는 모델명을 사용한다. JSON 응답 구조와 단계 시간 합을 서버에서 검증한다.
 
 ## 제출용 화면 증빙
 
