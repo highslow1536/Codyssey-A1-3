@@ -34,7 +34,9 @@ function renderRoutine(data) {
     number.textContent = String(index + 1).padStart(2, '0');
     const content = document.createElement('div');
     const title = document.createElement('strong');
-    title.textContent = `${step.title} · ${step.minutes}분`;
+    title.textContent = /\d+\s*분/.test(step.title)
+      ? step.title
+      : `${step.title} · ${step.minutes}분`;
     const description = document.createElement('p');
     description.textContent = step.description;
     content.append(title, description);

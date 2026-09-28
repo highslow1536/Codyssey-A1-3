@@ -34,7 +34,8 @@ def create_routine(mood, minutes, context, opener=urlopen):
                 "각 description은 바로 따라 할 수 있는 한 문장으로 작성하세요. "
                 "마크다운이나 코드 블록 없이 JSON 객체만 출력하세요. "
                 "최상위 키는 title, intro, steps, closing입니다. "
-                "steps는 객체 배열이며 각 객체는 문자열 title, 양의 정수 minutes, 문자열 description을 가져야 합니다."
+                "steps는 객체 배열이며 각 객체는 문자열 title, 양의 정수 minutes, 문자열 description을 가져야 합니다. "
+                "각 단계 title에는 시간이나 분 표기를 넣지 마세요."
             )},
             {"role": "user", "content": prompt},
         ],
