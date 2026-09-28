@@ -47,6 +47,7 @@
 | 실제 AI 입력과 결과 | 기분·시간·상황 입력 후 단계별 루틴 출력. [운영 결과 캡처](docs/evidence/ai-result.png) · [화면 동작 코드](js/app.js) |
 | Python Vercel Serverless API | [`api/routine.py`](api/routine.py) · [Vercel 설정](vercel.json) |
 | 응답 지연 개선 | [현재 적용 사항과 캐시·모델·요약 전략](#응답-지연-개선-전략) · [기획서](docs/PLAN.md#응답-지연-개선) |
+| 운영 E2E 재현·키 관리 | [재현 명령과 실제 검증 로그](#운영-e2e-재현) · [키 유출 대응 절차](#키-유출-시-대응) |
 | 기획서·README·AI 작업 과정 | [기획서](docs/PLAN.md) · 현재 README · [작업 기록](docs/AI_WORK_LOG.md) |
 
 AI 작업 기록에는 실제 구현·테스트·수정 사항과 연결된 Git 커밋을 정리했습니다. **Codex 대화 화면 원본 캡처는 공개 저장소에 포함하지 않았으므로, 평가 과정에서 대화 화면 자체를 요구한다면 별도로 제출해야 합니다.**
@@ -93,6 +94,28 @@ AI 작업 기록에는 실제 구현·테스트·수정 사항과 연결된 Git 
 - Python 단위 테스트 **3건 통과**: [테스트 코드](tests/test_routine.py). 브라우저 확인 코드: [화면 테스트](tests/browser_smoke.cjs), [실제 결과 캡처](tests/capture_live_result.cjs)
 
 AI가 작성한 초안을 그대로 두지 않고, Vercel 진입점 오류·API 제공자 불일치·결과의 시간 중복 표시를 수정했습니다. 관련 변경은 [배포 설정 수정](https://github.com/highslow1536/Codyssey-A1-3/commit/c76109fb23ebef9e24ef5a595cb376f2440a105f), [Copa API 전환](https://github.com/highslow1536/Codyssey-A1-3/commit/ebec752cd6af852087195e49366c18c751f00a24), [시간 표시 수정](https://github.com/highslow1536/Codyssey-A1-3/commit/4681accbbedc2d012c9af863c6862ed0395ce5ed)에서 확인할 수 있습니다.
+
+## 운영 E2E 재현
+
+Python 3.12 이상에서 저장소 루트의 `python3 tests/e2e_live.py`를 실행합니다. 추가 패키지나 로컬 API 키 없이 운영 URL의 4개 화면 구획과 CSS·JavaScript 로딩, 실제 Copa AI 응답의 2~3단계·시간 합, 잘못된 입력에 대한 400 응답을 차례로 검증합니다. 다른 배포를 검사하려면 `python3 tests/e2e_live.py https://example.vercel.app/`처럼 URL을 인자로 전달합니다. 실제 AI 요청 1회가 발생하므로 공급자의 사용량에 포함될 수 있습니다. [재현 스크립트](tests/e2e_live.py)
+
+2026-09-28 운영 URL에서 실행한 로그(응답 본문·입력·키는 출력하지 않음):
+
+```text
+PASS GET /: 200, four sections
+PASS GET /css/style.css: 200
+PASS GET /js/app.js: 200
+PASS POST /api/routine: 200, 3 steps, total 3 min, 18.5s
+PASS POST invalid /api/routine: 400
+```
+
+실행 시간과 AI가 반환하는 단계 수는 요청마다 달라질 수 있습니다. 실제 브라우저에서 입력부터 결과 표시까지의 모습은 [운영 결과 캡처](docs/evidence/ai-result.png)와 [브라우저 확인 코드](tests/capture_live_result.cjs)에서 확인할 수 있습니다.
+
+## 키 유출 시 대응
+
+1. Copa virtual key가 코드·Git 기록·로그·캡처 등에 노출됐다면 **공급자에서 해당 키를 즉시 폐기**하고 새 키를 발급합니다. 단순히 파일에서 지우는 것으로는 이미 노출된 키를 보호할 수 없습니다. [GitHub의 비밀값 유출 대응 안내](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
+2. Vercel 프로젝트에서 `OPENAI_API_KEY`를 새 값으로 교체합니다. 적용한 모든 환경(Production/Preview/Development)을 확인하고 새 배포를 실행합니다. 환경 변수 변경은 기존 배포에 소급 적용되지 않습니다. [Vercel 환경 변수 안내](https://vercel.com/docs/environment-variables) · [키 교체 안내](https://vercel.com/docs/environment-variables/rotating-secrets)
+3. [운영 E2E 스크립트](tests/e2e_live.py)로 새 배포를 확인하고, 공급자의 사용량·오류 내역과 Vercel 실행 로그에서 이상 호출을 조사합니다. 저장소에 키가 들어갔다면 노출 위치를 제거하고 GitHub의 기록 정리 절차를 검토합니다. 기록 재작성은 협업자와 조율해야 하며, 키 폐기를 대신하지 않습니다. 키 원문은 이슈·로그·문서에 다시 올리지 않습니다.
 
 ## 로컬 실행과 재배포
 
