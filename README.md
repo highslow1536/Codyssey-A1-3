@@ -50,9 +50,10 @@ python3 dev_server.py
 
 ## 검증 및 제출 자료
 
+- [GitHub 저장소](https://github.com/highslow1536/Codyssey-A1-3)
 - `python3 -m unittest discover -s tests -v`: API 입력·응답·AI 결과 구조 확인
 - [서비스 기획서](docs/PLAN.md): 문제, 대상, 화면, AI 흐름, 오류 처리, 테스트 시나리오
 - [AI 코드 작성 과정](docs/AI_WORK_LOG.md): 실제 작업 흐름과 제출 증빙 위치
 - [데스크톱 화면](docs/evidence/desktop.png)과 [모바일 화면](docs/evidence/mobile.png)은 로컬 Chrome에서 캡처했습니다. 실제 AI 결과 화면과 AI 대화 캡처는 API 키가 설정된 배포 환경 및 이 Codex 대화에서 추가해야 합니다.
 
-현재 작업 환경에는 OpenAI 키와 GitHub/Vercel 프로젝트 연결 정보가 없어 실제 AI 호출과 운영 URL 검증은 아직 수행하지 않았습니다.
+현재 작업 환경에는 OpenAI 키와 Vercel 프로젝트 연결 정보가 없어 실제 AI 호출과 운영 URL 검증은 아직 수행하지 않았습니다.
