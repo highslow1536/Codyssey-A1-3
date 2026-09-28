@@ -12,6 +12,32 @@
 | AI를 활용한 구현과 오류 수정 과정 | [AI 작업 기록](docs/AI_WORK_LOG.md) |
 | 운영 화면 증빙 | [데스크톱 전체 화면](docs/evidence/desktop.png) · [모바일 전체 화면](docs/evidence/mobile.png) · **[실제 AI 결과 화면](docs/evidence/ai-result.png)** |
 
+## 화면으로 먼저 보기
+
+아래 이미지는 모두 [운영 사이트](https://codyssey-a1-3-nine.vercel.app/)를 브라우저에서 직접 캡처했습니다. 이미지를 누르면 원본 크기로 볼 수 있습니다.
+
+### 1. 첫 화면
+
+[![틈 서비스 첫 화면](docs/evidence/hero.png)](docs/evidence/hero.png)
+
+### 2. 서비스 소개와 사용 순서
+
+[![기분 선택, 시간 선택, 루틴 생성의 세 단계 소개](docs/evidence/features.png)](docs/evidence/features.png)
+
+### 3. 모바일 입력과 실제 AI 결과
+
+| 모바일 입력 화면 | 실제 Copa AI 생성 결과 |
+| --- | --- |
+| [<img src="docs/evidence/mobile-form.png" alt="모바일 기분과 시간 입력 화면" width="280">](docs/evidence/mobile-form.png) | [<img src="docs/evidence/ai-result.png" alt="운영 사이트에서 생성한 3분 회복 루틴" width="680">](docs/evidence/ai-result.png) |
+
+### 4. 필수 입력 안내와 FAQ
+
+[![기분과 시간을 선택하지 않았을 때 표시되는 안내](docs/evidence/validation.png)](docs/evidence/validation.png)
+
+[![자주 묻는 질문 구획](docs/evidence/faq.png)](docs/evidence/faq.png)
+
+[데스크톱 페이지 전체 보기](docs/evidence/desktop.png) · [모바일 페이지 전체 보기](docs/evidence/mobile.png)
+
 ## 미션 조건별 확인 경로
 
 | 조건 | 구현·증빙 |

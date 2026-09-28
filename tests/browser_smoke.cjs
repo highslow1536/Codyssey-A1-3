@@ -27,8 +27,18 @@ async function main() {
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
       assert.equal(overflow, false, `${name}: horizontal overflow`);
       await page.screenshot({ path: path.join(evidenceDir, `${name}.png`), fullPage: true });
+      if (name === 'desktop') {
+        await page.locator('#top').screenshot({ path: path.join(evidenceDir, 'hero.png') });
+        await page.locator('#about').screenshot({ path: path.join(evidenceDir, 'features.png') });
+        await page.locator('#faq').screenshot({ path: path.join(evidenceDir, 'faq.png') });
+      } else {
+        await page.locator('#routine').screenshot({ path: path.join(evidenceDir, 'mobile-form.png') });
+      }
       await page.locator('#submit-button').click();
       assert.match(await page.locator('#form-error').innerText(), /기분과 시간을/);
+      if (name === 'desktop') {
+        await page.locator('#routine').screenshot({ path: path.join(evidenceDir, 'validation.png') });
+      }
       await page.locator('input[name="mood"][value="지침"]').check();
       await page.locator('input[name="minutes"][value="5"]').check();
       await page.route('**/api/routine', (route) => route.fulfill({
