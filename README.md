@@ -1,59 +1,68 @@
 # 틈 — 잠깐 멈추고, 다시 시작하기
 
-지금의 기분과 비워둘 수 있는 시간에 맞춰 2~3단계의 짧은 회복 루틴을 만드는 AI 웹 서비스입니다. 바쁜 학생과 직장인이 가입 없이 바로 사용할 수 있도록 만들었습니다.
+**지금 기분과 남은 시간을 입력하면 AI가 바로 실행할 수 있는 2~3단계 회복 루틴을 만들어 주는 웹 서비스**입니다. 긴 휴식을 내기 어려운 학생과 직장인을 위해 가입 없이 사용할 수 있도록 만들었습니다.
 
-## 주요 기능
+## 평가자용 바로가기
 
-- 기분 4종, 사용 가능 시간 4종, 선택형 상황 입력(최대 160자)
-- Codyssey Copa Chat Completions API를 이용한 개인화된 한국어 루틴 생성
-- 각 단계의 소요 시간 합 검증, 로딩·입력 오류·연결 실패·시간 초과 안내
-- 모바일·태블릿·데스크톱 반응형 화면과 키보드 탐색
+| 확인할 내용 | 링크 |
+| --- | --- |
+| 실제 작동하는 서비스 | **[틈 운영 사이트](https://codyssey-a1-3-nine.vercel.app/)** |
+| 전체 소스와 커밋 기록 | [GitHub 저장소](https://github.com/highslow1536/Codyssey-A1-3) · [커밋 기록](https://github.com/highslow1536/Codyssey-A1-3/commits/main/) |
+| 기획 의도·대상·화면·AI 흐름 | [서비스 기획서](docs/PLAN.md) |
+| AI를 활용한 구현과 오류 수정 과정 | [AI 작업 기록](docs/AI_WORK_LOG.md) |
+| 운영 화면 증빙 | [데스크톱 전체 화면](docs/evidence/desktop.png) · [모바일 전체 화면](docs/evidence/mobile.png) · **[실제 AI 결과 화면](docs/evidence/ai-result.png)** |
 
-## 기술 구성
+## 미션 조건별 확인 경로
 
-| 영역 | 기술 | 역할 |
+| 조건 | 구현·증빙 |
+| --- | --- |
+| 3개 이상 구획과 메뉴 이동 | 운영 사이트의 히어로 → 소개 → 루틴 만들기 → FAQ. [화면 코드](index.html) |
+| 반응형 화면 | 1280px [데스크톱](docs/evidence/desktop.png), 375px [모바일](docs/evidence/mobile.png) 캡처. [스타일 코드](css/style.css) |
+| 실제 AI 입력과 결과 | 기분·시간·상황 입력 후 단계별 루틴 출력. [운영 결과 캡처](docs/evidence/ai-result.png) · [화면 동작 코드](js/app.js) |
+| Python Vercel Serverless API | [`api/routine.py`](api/routine.py) · [Vercel 설정](vercel.json) |
+| 기획서·README·AI 작업 과정 | [기획서](docs/PLAN.md) · 현재 README · [작업 기록](docs/AI_WORK_LOG.md) |
+
+AI 작업 기록에는 실제 구현·테스트·수정 사항과 연결된 Git 커밋을 정리했습니다. **Codex 대화 화면 원본 캡처는 공개 저장소에 포함하지 않았으므로, 평가 과정에서 대화 화면 자체를 요구한다면 별도로 제출해야 합니다.**
+
+## 서비스 사용 흐름
+
+1. 상단 **루틴 만들기**로 이동합니다.
+2. 현재 기분(지침·불안·산만·무기력)과 가능한 시간(3·5·10·15분)을 선택합니다. 상황 설명은 선택이며 최대 160자입니다.
+3. **나만의 루틴 받아보기**를 누르면 결과 제목, 안내, 소요 시간이 표시된 2~3개 행동과 마무리 문장이 나타납니다. 다시 만들기도 가능합니다.
+
+필수 입력 누락, 서버 오류, 연결 실패, 시간 초과를 화면에 안내합니다. 서비스는 일상 루틴 아이디어를 제공하며 의료·심리 상담을 대신하지 않습니다. 입력 내용과 생성 결과를 사이트 데이터베이스에 저장하지 않습니다.
+
+## AI 연결과 코드 구조
+
+| 영역 | 역할 | 파일 |
 | --- | --- | --- |
-| 프런트엔드 | HTML, CSS, JavaScript | 입력 검증, `fetch('/api/routine')`, 결과 표시 |
-| 백엔드 | Python 표준 라이브러리, Vercel Function | 입력 재검증, AI API 호출, 오류 응답 |
-| AI | Codyssey Copa Chat Completions API | 루틴 JSON 생성 |
+| HTML/CSS | 화면·메뉴·반응형 레이아웃 | [index.html](index.html), [css/style.css](css/style.css) |
+| JavaScript | 입력 검사 → `fetch('/api/routine')` → 결과·오류 표시 | [js/app.js](js/app.js) |
+| Python Vercel Function | 입력 재검사, Copa AI 호출, JSON 결과·시간 합 검증 | [api/routine.py](api/routine.py) |
+| 배포 설정 | 정적 화면과 파일 기반 Python 함수를 함께 배포 | [vercel.json](vercel.json), [requirements.txt](requirements.txt) |
 
-## 로컬 실행
+백엔드는 Codyssey Copa의 `https://copa.codyssey.kr/v1/chat/completions`에 Chat Completions 형식으로 요청합니다. Vercel 환경 변수 **`OPENAI_API_KEY`에는 Copa virtual key**, **`MODEL`에는 모델명**을 넣습니다(기본값 `gpt-5-mini`). 키는 브라우저 코드와 저장소에 포함하지 않습니다. [환경 변수 예시](.env.example)
 
-Python 3.12 이상에서 프로젝트 루트에서 실행합니다.
-
-```bash
-python3 dev_server.py
-```
-
-브라우저에서 `http://localhost:8000`을 엽니다. AI 기능을 실제로 사용하려면 실행 전에 **서버 환경 변수** `OPENAI_API_KEY`에 Copa의 virtual key를 설정해야 합니다. 예를 들어 현재 셸에서 `export OPENAI_API_KEY=...`로 설정할 수 있습니다. 키가 없으면 화면은 열리지만 생성 요청은 설정 안내와 함께 실패합니다. `.env.example`은 변수 이름만 보여주는 예시입니다.
-
-`MODEL`은 선택 변수이며 기본값은 `gpt-5-mini`입니다. `requirements.txt`에는 추가 의존성이 없습니다.
-
-## Vercel 배포
-
-1. 이 폴더를 GitHub 저장소에 올립니다.
-2. Vercel에서 저장소를 가져와 프로젝트를 만듭니다. `vercel.json`이 프레임워크 프리셋을 `Other`로 고정하여 정적 파일과 `api/routine.py` 파일 기반 함수를 함께 배포합니다. 루트 디렉터리는 저장소 루트로 둡니다. 별도 빌드 명령은 필요하지 않습니다.
-3. Vercel 프로젝트의 환경 변수에 Copa virtual key를 `OPENAI_API_KEY`로 등록합니다. 필요하면 `MODEL`도 등록합니다. 키는 코드, README, 화면 캡처에 넣지 않습니다.
-4. 배포 후 운영 URL에서 메뉴 이동과 실제 루틴 생성을 확인합니다. 환경 변수 변경 후에는 재배포합니다.
-
-**배포 URL:** [https://codyssey-a1-3-nine.vercel.app/](https://codyssey-a1-3-nine.vercel.app/)
-
-## 요청과 응답
-
-`POST /api/routine`, `Content-Type: application/json`
+`POST /api/routine`의 요청 예시:
 
 ```json
-{"mood":"지침","minutes":5,"context":"회의가 막 끝났어요"}
+{"mood":"지침","minutes":3,"context":"잠시 쉬고 싶어요"}
 ```
 
-성공 시 `routine` 객체에 `title`, `intro`, `steps`(`title`, `minutes`, `description`), `closing`이 포함됩니다. `steps`는 2~3개이고 분 합계는 선택한 시간과 같아야 합니다. 잘못된 입력은 400, AI 실패는 502/503, 연결 시간 초과는 504로 안내합니다.
+성공 응답의 `routine`에는 `title`, `intro`, `steps`(`title`, `minutes`, `description`), `closing`이 들어갑니다. 서버는 단계 2~3개의 시간 합이 선택한 시간과 일치하는지 검사합니다. 잘못된 입력은 400, AI 서비스 실패는 502/503, 연결 지연은 504로 처리합니다.
 
-## 검증 및 제출 자료
+## 실제 검증 결과
 
-- [GitHub 저장소](https://github.com/highslow1536/Codyssey-A1-3)
-- `python3 -m unittest discover -s tests -v`: API 입력·응답·AI 결과 구조 확인
-- [서비스 기획서](docs/PLAN.md): 문제, 대상, 화면, AI 흐름, 오류 처리, 테스트 시나리오
-- [AI 코드 작성 과정](docs/AI_WORK_LOG.md): 실제 작업 흐름과 제출 증빙 위치
-- [데스크톱 화면](docs/evidence/desktop.png), [모바일 화면](docs/evidence/mobile.png), [실제 AI 결과 화면](docs/evidence/ai-result.png)은 Chrome에서 운영 URL을 열어 캡처했습니다. AI 코드 작성 대화 캡처는 이 Codex 대화 화면에서 별도로 추가해야 합니다.
+- 운영 URL의 HTML·CSS·JavaScript·아이콘: **200** 확인
+- 운영 API에 `지침`·`3분` 요청: **200**, 3단계의 소요 시간 합 **3분** 확인
+- 실제 브라우저 결과 표시: [AI 결과 캡처](docs/evidence/ai-result.png)
+- 1280px·375px Chrome 화면에서 가로 넘침, 필수 입력 안내, 결과 표시, 다시 만들기 확인
+- Python 단위 테스트 **3건 통과**: [테스트 코드](tests/test_routine.py). 브라우저 확인 코드: [화면 테스트](tests/browser_smoke.cjs), [실제 결과 캡처](tests/capture_live_result.cjs)
 
-운영 URL에서 화면, 정적 파일, Python API 경로와 실제 Copa 호출을 확인했습니다. `지침`·`3분` 입력에 대한 생성 요청이 200으로 성공했고, 3단계의 소요 시간 합이 3분인 것을 확인했습니다.
+AI가 작성한 초안을 그대로 두지 않고, Vercel 진입점 오류·API 제공자 불일치·결과의 시간 중복 표시를 수정했습니다. 관련 변경은 [배포 설정 수정](https://github.com/highslow1536/Codyssey-A1-3/commit/c76109fb23ebef9e24ef5a595cb376f2440a105f), [Copa API 전환](https://github.com/highslow1536/Codyssey-A1-3/commit/ebec752cd6af852087195e49366c18c751f00a24), [시간 표시 수정](https://github.com/highslow1536/Codyssey-A1-3/commit/4681accbbedc2d012c9af863c6862ed0395ce5ed)에서 확인할 수 있습니다.
+
+## 로컬 실행과 재배포
+
+Python 3.12 이상에서 프로젝트 루트에서 `python3 dev_server.py`를 실행하고 `http://localhost:8000`을 엽니다. 실제 AI 생성에는 서버 환경 변수 `OPENAI_API_KEY`가 필요합니다. 검증은 `python3 -m unittest discover -s tests -v`로 실행합니다.
+
+배포는 GitHub `main` 브랜치와 Vercel을 연결해 자동으로 진행합니다. Vercel 프로젝트의 **Settings → Environment Variables**에서 `OPENAI_API_KEY`와 필요 시 `MODEL`을 설정합니다. 환경 변수를 변경했다면 재배포해야 새 값이 적용됩니다. 키 값은 코드, 문서, 캡처에 넣지 마세요.
