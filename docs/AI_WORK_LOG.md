@@ -12,10 +12,11 @@
 6. 첫 Vercel 빌드가 Python 진입점 탐색 오류로 실패했다. 정적 화면과 `api/`의 파일 기반 함수를 함께 배포하도록 `vercel.json`에서 프레임워크를 `Other`로 고정했다. 새 커밋의 Vercel 상태가 성공인 것을 확인했다.
 7. 운영 URL `https://codyssey-a1-3-nine.vercel.app/`에서 화면과 정적 자산은 200, `GET /api/routine`은 405로 확인했다. AI 키가 아직 없어 정상 입력의 POST는 503을 반환한다. 실제 생성 결과 검증은 키 설정 후 진행한다.
 8. 사용자가 제공한 Copa 공식 호출 예제를 바탕으로 OpenAI Responses 호출을 Copa Chat Completions 호출로 수정했다. `OPENAI_API_KEY`에는 virtual key를, `MODEL`에는 모델명을 사용한다. JSON 응답 구조와 단계 시간 합을 서버에서 검증한다.
+9. 재배포 후 운영 API에 `지침`·`3분`을 전송하여 200 응답과 3단계의 시간 합 3분을 확인했다. 실제 브라우저에서도 결과가 표시됐다. 첫 캡처에서 단계 제목과 UI의 시간 중복을 발견해 수정하고, 다시 실제 AI 결과를 받아 `docs/evidence/ai-result.png`에 저장했다.
 
 ## 제출용 화면 증빙
 
-- 화면 캡처: `docs/evidence/desktop.png`와 `docs/evidence/mobile.png`는 실제 운영 화면이다. 실제 AI 결과 화면은 키 설정 후 별도로 저장한다.
+- 화면 캡처: `docs/evidence/desktop.png`, `docs/evidence/mobile.png`, `docs/evidence/ai-result.png`는 실제 운영 화면이다.
 - AI 대화 증빙: 이 작업의 실제 Codex 대화 화면을 캡처해 같은 폴더에 둔다. 이 문서는 대화 캡처를 대신하지 않는다.
 - 실제 AI API 호출이 불가능한 환경에서는 모의 응답을 실제 결과로 표시하지 않는다.
 

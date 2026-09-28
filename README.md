@@ -54,6 +54,6 @@ python3 dev_server.py
 - `python3 -m unittest discover -s tests -v`: API 입력·응답·AI 결과 구조 확인
 - [서비스 기획서](docs/PLAN.md): 문제, 대상, 화면, AI 흐름, 오류 처리, 테스트 시나리오
 - [AI 코드 작성 과정](docs/AI_WORK_LOG.md): 실제 작업 흐름과 제출 증빙 위치
-- [데스크톱 화면](docs/evidence/desktop.png)과 [모바일 화면](docs/evidence/mobile.png)은 Chrome에서 운영 URL을 열어 캡처했습니다. 실제 AI 결과 화면과 AI 대화 캡처는 API 키가 설정된 배포 환경 및 이 Codex 대화에서 추가해야 합니다.
+- [데스크톱 화면](docs/evidence/desktop.png), [모바일 화면](docs/evidence/mobile.png), [실제 AI 결과 화면](docs/evidence/ai-result.png)은 Chrome에서 운영 URL을 열어 캡처했습니다. AI 코드 작성 대화 캡처는 이 Codex 대화 화면에서 별도로 추가해야 합니다.
 
-운영 URL에서 화면, 정적 파일, Python API 경로를 확인했습니다. AI API 제공자를 Copa로 변경한 뒤 실제 생성 결과는 재배포 환경에서 확인합니다.
+운영 URL에서 화면, 정적 파일, Python API 경로와 실제 Copa 호출을 확인했습니다. `지침`·`3분` 입력에 대한 생성 요청이 200으로 성공했고, 3단계의 소요 시간 합이 3분인 것을 확인했습니다.
