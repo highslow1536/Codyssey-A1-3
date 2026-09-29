@@ -5,6 +5,51 @@ const errorBox = document.querySelector('#form-error');
 const submitButton = document.querySelector('#submit-button');
 const result = document.querySelector('#result');
 const resetButton = document.querySelector('#reset-button');
+const saveButton = document.querySelector('#save-button');
+const saveStatus = document.querySelector('#save-status');
+const savedSection = document.querySelector('#saved-routine');
+const themeToggle = document.querySelector('#theme-toggle');
+const ROUTINE_STORAGE_KEY = 'teum-saved-routine';
+const THEME_STORAGE_KEY = 'teum-theme';
+let currentRoutine = null;
+let savedRoutine = null;
+
+function isRoutine(data) {
+  return data && typeof data.title === 'string' && typeof data.intro === 'string'
+    && typeof data.closing === 'string' && Array.isArray(data.steps)
+    && data.steps.length >= 2 && data.steps.length <= 3
+    && data.steps.every((step) => step && typeof step.title === 'string'
+      && typeof step.description === 'string' && Number.isInteger(step.minutes)
+      && step.minutes > 0);
+}
+
+function refreshSaved() {
+  savedSection.hidden = !savedRoutine;
+  if (savedRoutine) document.querySelector('#saved-title').textContent = savedRoutine.title;
+}
+
+function applyTheme(theme) {
+  const dark = theme === 'dark';
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  themeToggle.textContent = dark ? '☀ 라이트 모드' : '☾ 다크 모드';
+  themeToggle.setAttribute('aria-pressed', String(dark));
+  document.querySelector('meta[name="theme-color"]').content = dark ? '#17251f' : '#f7f5ef';
+}
+
+try {
+  const stored = JSON.parse(localStorage.getItem(ROUTINE_STORAGE_KEY));
+  if (isRoutine(stored)) savedRoutine = stored;
+  applyTheme(localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light');
+} catch {
+  applyTheme('light');
+}
+refreshSaved();
+
+themeToggle.addEventListener('click', () => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem(THEME_STORAGE_KEY, next); } catch { /* Theme still works for this visit. */ }
+});
 
 contextInput.addEventListener('input', () => {
   charCount.textContent = `${contextInput.value.length} / 160`;
@@ -22,6 +67,8 @@ function clearError() {
 }
 
 function renderRoutine(data) {
+  currentRoutine = data;
+  saveStatus.textContent = '';
   document.querySelector('#result-title').textContent = data.title;
   document.querySelector('#result-intro').textContent = data.intro;
   document.querySelector('#result-closing').textContent = data.closing;
@@ -63,7 +110,7 @@ form.addEventListener('submit', async (event) => {
   }
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 20000);
+  const timer = setTimeout(() => controller.abort(), 25000);
   submitButton.disabled = true;
   submitButton.firstChild.textContent = '나에게 맞는 루틴을 만드는 중… ';
 
@@ -102,4 +149,31 @@ resetButton.addEventListener('click', () => {
   form.hidden = false;
   clearError();
   form.querySelector('input[name="mood"]:checked')?.focus();
+});
+
+saveButton.addEventListener('click', () => {
+  if (!currentRoutine || !isRoutine(currentRoutine)) return;
+  try {
+    localStorage.setItem(ROUTINE_STORAGE_KEY, JSON.stringify(currentRoutine));
+    savedRoutine = currentRoutine;
+    refreshSaved();
+    saveStatus.textContent = '이 브라우저에 저장했어요.';
+  } catch {
+    saveStatus.textContent = '저장할 수 없어요. 브라우저 저장 공간 설정을 확인해 주세요.';
+  }
+});
+
+document.querySelector('#load-saved').addEventListener('click', () => {
+  if (savedRoutine) renderRoutine(savedRoutine);
+});
+
+document.querySelector('#delete-saved').addEventListener('click', () => {
+  try {
+    localStorage.removeItem(ROUTINE_STORAGE_KEY);
+    savedRoutine = null;
+    refreshSaved();
+    saveStatus.textContent = '저장한 루틴을 삭제했어요.';
+  } catch {
+    saveStatus.textContent = '삭제할 수 없어요. 브라우저 저장 공간 설정을 확인해 주세요.';
+  }
 });

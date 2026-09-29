@@ -30,6 +30,8 @@ def check(base_url):
     assert status == 200, f"GET /: expected 200, got {status}"
     for marker in (b'id="top"', b'id="about"', b'id="routine"', b'id="faq"'):
         assert marker in html, "GET /: a required section is missing"
+    for marker in (b'id="theme-toggle"', b'id="save-button"', b'id="saved-routine"'):
+        assert marker in html, "GET /: a bonus control is missing"
     print("PASS GET /: 200, four sections")
 
     for path in ("css/style.css", "js/app.js"):

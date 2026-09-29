@@ -26,6 +26,16 @@ async function main() {
       assert.equal(await page.title(), '틈 — 잠깐 멈추고, 다시 시작하기');
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
       assert.equal(overflow, false, `${name}: horizontal overflow`);
+      await page.locator('#theme-toggle').click();
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+      await page.reload({ waitUntil: 'networkidle' });
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+      if (name === 'desktop') await page.screenshot({ path: path.join(evidenceDir, 'dark.png'), fullPage: true });
+      await page.locator('#theme-toggle').click();
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      await page.waitForFunction(() => getComputedStyle(document.querySelector('.choice span')).backgroundColor === 'rgb(255, 255, 255)');
+      assert.equal(await page.locator('.choice span').first().evaluate((element) => getComputedStyle(element).backgroundColor), 'rgb(255, 255, 255)');
+      assert.equal(await page.locator('#submit-button').isEnabled(), true);
       await page.screenshot({ path: path.join(evidenceDir, `${name}.png`), fullPage: true });
       if (name === 'desktop') {
         await page.locator('#top').screenshot({ path: path.join(evidenceDir, 'hero.png') });
@@ -41,6 +51,7 @@ async function main() {
       }
       await page.locator('input[name="mood"][value="지침"]').check();
       await page.locator('input[name="minutes"][value="5"]').check();
+      await page.locator('#context').fill('저장하지 않을 개인 상황');
       await page.route('**/api/routine', (route) => route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -57,9 +68,21 @@ async function main() {
       await page.waitForFunction(() => document.querySelector('#result-title').textContent === '5분의 작은 쉼');
       assert.equal(await page.locator('#result-title').innerText(), '5분의 작은 쉼');
       assert.equal(await page.locator('#result-steps li').count(), 2);
+      await page.locator('#save-button').click();
+      assert.equal(await page.locator('#saved-routine').isVisible(), true);
+      const saved = await page.evaluate(() => localStorage.getItem('teum-saved-routine'));
+      assert.equal(saved.includes('저장하지 않을 개인 상황'), false);
+      await page.reload({ waitUntil: 'networkidle' });
+      assert.equal(await page.locator('#saved-routine').isVisible(), true);
+      await page.locator('#load-saved').click();
+      assert.equal(await page.locator('#result-title').innerText(), '5분의 작은 쉼');
       await page.locator('#reset-button').click();
       assert.equal(await page.locator('#routine-form').isVisible(), true);
-      console.log(`${name}: layout, validation, result, reset OK`);
+      await page.locator('#delete-saved').click();
+      assert.equal(await page.locator('#saved-routine').isVisible(), false);
+      assert.equal(await page.evaluate(() => localStorage.getItem('teum-saved-routine')), null);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth), false);
+      console.log(`${name}: layout, dark mode, validation, result, save, reload, delete OK`);
       await page.close();
     }
   } finally {
