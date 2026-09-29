@@ -38,6 +38,7 @@ async function main() {
       await page.locator('#theme-toggle').click();
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
       await page.waitForFunction(() => getComputedStyle(document.querySelector('.choice span')).backgroundColor === 'rgb(28, 45, 36)');
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
       await page.screenshot({ path: path.join(bonusDir, 'dark-mode.png'), fullPage: true });
       console.log('Live bonus: save, reload, and dark mode OK; screenshots saved.');
     }
