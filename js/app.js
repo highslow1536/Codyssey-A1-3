@@ -39,6 +39,8 @@ function applyTheme(theme) {
 try {
   const stored = JSON.parse(localStorage.getItem(ROUTINE_STORAGE_KEY));
   if (isRoutine(stored)) savedRoutine = stored;
+} catch { /* Stored data may be unavailable or invalid. */ }
+try {
   applyTheme(localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light');
 } catch {
   applyTheme('light');

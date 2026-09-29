@@ -45,6 +45,10 @@
 | ① 운영 자동화 또는 데이터 저장 고도화 | 실제 AI 생성 결과를 받은 뒤 **이 기기에 저장**을 누르면 최신 루틴 1개가 브라우저 `localStorage`에 남습니다. 새로고침 후 **다시 보기**, **삭제**까지 동작합니다. [저장 화면](docs/evidence/saved-routine.png) · [코드](js/app.js) |
 | ② UX 및 측정 고도화 | **다크 모드** 버튼으로 테마를 바꾸고 새로고침 후에도 선택을 유지합니다. [어두운 화면](docs/evidence/dark-mode.png) · [스타일](css/style.css) · [검증 방법](docs/PLAN.md#보너스-기능) |
 
+| 실제 AI 결과를 저장한 뒤 새로고침 | 저장한 루틴을 어두운 화면에서 보기 |
+| --- | --- |
+| [<img src="docs/evidence/saved-routine.png" alt="새로고침 후 남아 있는 저장한 AI 루틴" width="560">](docs/evidence/saved-routine.png) | [<img src="docs/evidence/dark-mode.png" alt="다크 모드가 적용된 운영 사이트" width="560">](docs/evidence/dark-mode.png) |
+
 결과 저장은 사용자가 직접 선택해야 시작됩니다. 자유 입력 원문과 API 키는 별도로 저장하지 않지만, 생성 결과에 입력 내용이 반영될 수 있으므로 민감한 정보는 입력하지 마세요. 저장된 결과는 다른 기기와 공유되지 않습니다. 두 기능의 데스크톱·모바일 재현 절차는 [브라우저 테스트](tests/browser_smoke.cjs)에 있습니다.
 
 ## 미션 조건별 확인 경로
@@ -101,6 +105,7 @@ AI 작업 기록에는 실제 구현·테스트·수정 사항과 연결된 Git 
 - 운영 API에 `지침`·`3분` 요청: **200**, 3단계의 소요 시간 합 **3분** 확인
 - 실제 브라우저 결과 표시: [AI 결과 캡처](docs/evidence/ai-result.png)
 - 1280px·375px Chrome 화면에서 가로 넘침, 필수 입력 안내, 결과 표시, 다시 만들기 확인
+- 운영 사이트에서 실제 AI 결과 저장 → 새로고침 → 다시 보기와 다크 모드 전환 확인: [저장 화면](docs/evidence/saved-routine.png) · [다크 화면](docs/evidence/dark-mode.png)
 - Python 단위 테스트 **3건 통과**: [테스트 코드](tests/test_routine.py). 브라우저 확인 코드: [화면 테스트](tests/browser_smoke.cjs), [실제 결과 캡처](tests/capture_live_result.cjs)
 
 AI가 작성한 초안을 그대로 두지 않고, Vercel 진입점 오류·API 제공자 불일치·결과의 시간 중복 표시를 수정했습니다. 관련 변경은 [배포 설정 수정](https://github.com/highslow1536/Codyssey-A1-3/commit/c76109fb23ebef9e24ef5a595cb376f2440a105f), [Copa API 전환](https://github.com/highslow1536/Codyssey-A1-3/commit/ebec752cd6af852087195e49366c18c751f00a24), [시간 표시 수정](https://github.com/highslow1536/Codyssey-A1-3/commit/4681accbbedc2d012c9af863c6862ed0395ce5ed)에서 확인할 수 있습니다.
@@ -109,13 +114,13 @@ AI가 작성한 초안을 그대로 두지 않고, Vercel 진입점 오류·API 
 
 Python 3.12 이상에서 저장소 루트의 `python3 tests/e2e_live.py`를 실행합니다. 추가 패키지나 로컬 API 키 없이 운영 URL의 4개 화면 구획과 CSS·JavaScript 로딩, 실제 Copa AI 응답의 2~3단계·시간 합, 잘못된 입력에 대한 400 응답을 차례로 검증합니다. 다른 배포를 검사하려면 `python3 tests/e2e_live.py https://example.vercel.app/`처럼 URL을 인자로 전달합니다. 실제 AI 요청 1회가 발생하므로 공급자의 사용량에 포함될 수 있습니다. [재현 스크립트](tests/e2e_live.py)
 
-2026-09-28 운영 URL에서 실행한 로그(응답 본문·입력·키는 출력하지 않음):
+2026-09-29 운영 URL에서 실행한 로그(응답 본문·입력·키는 출력하지 않음):
 
 ```text
 PASS GET /: 200, four sections
 PASS GET /css/style.css: 200
 PASS GET /js/app.js: 200
-PASS POST /api/routine: 200, 3 steps, total 3 min, 18.5s
+PASS POST /api/routine: 200, 3 steps, total 3 min, 9.6s
 PASS POST invalid /api/routine: 400
 ```
 
