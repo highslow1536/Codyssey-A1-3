@@ -20,15 +20,14 @@ async function main() {
     headless: true,
   });
   try {
-    for (const [name, width, height] of [['desktop', 1280, 800], ['tablet', 960, 800], ['mobile', 375, 812]]) {
+    for (const [name, width, height] of [['desktop', 1280, 800], ['tablet', 960, 800], ['mobile', 375, 812], ['small', 320, 700]]) {
       const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
       await page.goto(baseUrl, { waitUntil: 'networkidle' });
       assert.equal(await page.title(), '틈 — 잠깐 멈추고, 다시 시작하기');
       assert.equal(await page.locator('.site-header #theme-toggle').isVisible(), true);
-      await page.locator('#faq').scrollIntoViewIfNeeded();
+      assert.equal(await page.locator('.site-header').evaluate((element) => getComputedStyle(element).position), 'relative');
       const toggleBox = await page.locator('#theme-toggle').boundingBox();
       assert(toggleBox && toggleBox.y >= 0 && toggleBox.y < height, `${name}: theme toggle is not in the viewport`);
-      await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
       assert.equal(overflow, false, `${name}: horizontal overflow`);
       await page.locator('#theme-toggle').click();
